@@ -567,7 +567,7 @@ local protected = gethui and gethui() or CoreGui
 local orion = protected:WaitForChild("Orion")
 
 local window = lib:MakeWindow({
-    Name = "SB2 Scriptv2",
+    Name = "SB2",
     HidePremium = false,
     SaveConfig = false,
     ConfigFolder = false
