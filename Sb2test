@@ -1337,13 +1337,6 @@ local function getUpgrade(item)
     return upgrade and upgrade.Value or 0
 end
 
-do
-    local farm_tab2 = window:MakeTab({
-        Name = "Farm Tab (util)",
-        Icon = "",
-        PremiumOnly = false
-    })
-
     --[[
     formulas
 
@@ -1351,69 +1344,6 @@ do
     legends: math.floor(base + (base * 0.05 * upgrade_count))
 
     ]]
-
-    local function AutoEquip()
-        if not settings.AutoEquip then
-            return
-        end
-
-        task.wait(1)
-
-        local highest_damage = 0
-        local highest_defense = 0
-        local highest_weapon
-        local highest_armor
-
-        local level2 = tonumber(match(level.Text, "%d+"))
-        for _, item in next, Inventory:GetChildren() do
-            local ItemData = ItemDatas[item.Name]
-
-            local class = ItemData.Type
-            if class ~= "Weapon" and class ~= "Clothing" then
-                continue
-            end
-
-            if ItemData.level > level2 then
-                continue
-            end
-
-            local base = ItemData.base
-            local upgrades = getUpgrade(item)
-            local rarity = ItemData.rarity
-            local stat = math.floor(base + (base * rates[rarity] * upgrades))
-
-            if class == "Weapon" then
-                if stat > highest_damage then
-                    highest_damage = stat
-                    highest_weapon = item
-                end
-
-            elseif class == "Clothing" then
-                if stat > highest_defense then
-                    highest_defense = stat
-                    highest_armor = item
-                end
-            end
-        end
-
-        if highest_weapon then
-            rf:InvokeServer("Equipment", {"EquipWeapon", highest_weapon, "Right"})
-        end
-
-        if highest_armor then
-            rf:InvokeServer("Equipment", {"Wear", highest_armor})
-        end
-    end
-
-    Inventory.ChildAdded:Connect(AutoEquip)
-    farm_tab2:AddToggle({
-        Name = "Auto Equip Best Equipment",
-        Default = false,
-        Callback = function(bool)
-            settings.AutoEquip = bool
-            AutoEquip()
-        end
-    })
 
     local function AutoDismantle(item)
         task.wait(1)
@@ -1423,26 +1353,6 @@ do
         if class ~= "Weapon" and class ~= "Clothing" then
             return
         end
-
-        local rarity = ItemData.rarity
-        if dismantle[rarity] then
-            Event:FireServer("Equipment", {"Dismantle", {item}})
-        end
-    end
-
-    for i, v in next, names do
-        farm_tab2:AddToggle({
-            Name = "Auto Dismantle " .. v,
-            Default = false,
-            Callback = function(bool)
-                local rarity = rarities[i]
-                dismantle[rarity] = bool
-            end
-        })
-    end
-
-    Inventory.ChildAdded:Connect(AutoDismantle)
-end
 
 do
     local farm_tab3 = window:MakeTab({
@@ -1742,27 +1652,6 @@ do
     })
 
     Character_tab:AddToggle({
-        Name = "Infinite Jump",
-        Default = false,
-        Callback = function(bool)
-            settings.InfJump = bool
-        end
-    })
-
-    UserInputS.InputBegan:Connect(function(key, processed)
-        if processed or not settings.InfJump then
-            return
-        end
-
-        if key.KeyCode == Enum.KeyCode.Space then
-            pcall(function()
-                humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-            end)
-        end
-    end)
-
-
-    Character_tab:AddToggle({
         Name = "Infinite Sprint",
         Default = false,
         Callback = function(bool)
@@ -1870,21 +1759,6 @@ do
         end
     })
 
-    for i, v in next, names do
-        Smithing:AddButton({
-            Name = "Dismantle All " .. v,
-            Callback = function()
-                local confirm = create_confirm()
-
-                if confirm then
-                    local rarity = rarities[i]
-                    Dismantle_Rarity(rarity)
-                end
-            end
-        })
-    end
-end
-
 do
     local Performance_tab = window:MakeTab({
         Name = "Perf Boosters",
@@ -1928,40 +1802,6 @@ do
             end
         end
     end
-
-    local tomute = false
-    local sound_names = {"SwordHit", "Unsheath", "SwordSlash"}
-    local sounds = {}
-
-    for _, v in next, workspace:GetDescendants() do
-        if table.find(sound_names, v.Name) then
-            sounds[v] = v
-        end
-    end
-
-    local function muteswings(descendant)
-        if table.find(sound_names, descendant.Name) then
-            sounds[descendant] = descendant
-            descendant.Volume = tomute and 0 or .3
-        end
-    end
-
-    workspace.DescendantAdded:Connect(muteswings)
-    workspace.DescendantRemoving:Connect(function(descendant)
-        sounds[descendant] = nil
-    end)
-
-    Performance_tab:AddToggle({
-        Name = "Mute Swing Sounds",
-        Default = false,
-        Callback = function(bool)
-            tomute = bool
-            for _, v in next, sounds do
-                v.Volume = tomute and 0 or .3
-            end
-        end
-    })
-end
 
 do
     local Misc_tab = window:MakeTab({
