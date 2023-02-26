@@ -1,5 +1,5 @@
 -- loadfile('Scriptz/sb2 script.lua')()
--- loadstring(game:HttpGet('https://raw.githubusercontent.com/PinoyScripter/Main/main/Sb2test'))()
+-- loadstring(game:HttpGet('https://raw.githubusercontent.com/PinoyScripter/Main/main/Rock'))()
 if getgenv().SB2Script then
     return
 end
@@ -54,7 +54,7 @@ end
 
 local teleport_execute = queue_on_teleport or (fluxus and fluxus.queue_on_teleport) or (syn and syn.queue_on_teleport)
 if teleport_execute then
-    teleport_execute("loadstring(game:HttpGet('https://raw.githubusercontent.com/PinoyScripter/Main/main/Sb2test'))()")
+    teleport_execute("loadstring(game:HttpGet('https://raw.githubusercontent.com/PinoyScripter/Main/main/Rock'))()")
 end
 
 local mobs_on_floor = {
@@ -564,7 +564,7 @@ end
 local lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/noobscripter38493/orion/main/orionnnn.lua"))()
 
 local protected = gethui and gethui() or CoreGui
-local orion = protected:WaitForChild("OrionX")
+local orion = protected:WaitForChild("Orion")
 
 local window = lib:MakeWindow({
     Name = "SB2",
@@ -587,30 +587,6 @@ do
 
     farm_tab:AddParagraph("Warning", "SB2 Mods are extremely active and autofarm will likely get you banned")
     local mobs_table = {}
-
-local time_label = farm_tab:AddLabel("Elapsed Time")
-    task.spawn(function()
-        local floor = math.floor
-        while true do task.wait(1)
-            local seconds = floor(time())
-            local minutes = floor(seconds / 60)
-            seconds = seconds - (60 * minutes)
-
-            local hours = floor(minutes / 60)
-            minutes = minutes - (60 * hours)
-
-            local days = floor(hours / 24)
-            hours = hours - (24 * days)
-
-            local o1 = days == 1 and "Day" or "Days"
-            local o2 = hours == 1 and "Hour" or "Hours"
-            local o3 = minutes == 1 and "Minute" or "Minutes"
-            local o4 = seconds == 1 and "Second" or "Seconds"
-
-            local displayed = ("%s %s | %s %s | %s %s | %s %s"):format(days, o1, hours, o2, minutes, o3, seconds, o4)
-            time_label:Set("Time Elapsed: " .. displayed)
-        end
-    end)
 
     local function distanceCheck(enemy)
         local enemy_hrp = enemy:FindFirstChild("HumanoidRootPart")
@@ -1114,6 +1090,14 @@ do
             settings.AttackPlayers = bool
         end
     })
+    
+    combat:AddToggle({
+        Name = "No Clip",
+        Default = false,
+        Callback = function(bool)
+            settings.NoClip = bool
+        end
+    })
 
     combat:AddSlider({
         Name = "Kill Aura Range",
@@ -1354,6 +1338,113 @@ local function getUpgrade(item)
 end
 
 do
+    local farm_tab2 = window:MakeTab({
+        Name = "Farm Tab (util)",
+        Icon = "",
+        PremiumOnly = false
+    })
+
+    --[[
+    formulas
+
+    non legends: math.floor(base + (base * 0.04 * upgrade_count))
+    legends: math.floor(base + (base * 0.05 * upgrade_count))
+
+    ]]
+
+    local function AutoEquip()
+        if not settings.AutoEquip then
+            return
+        end
+
+        task.wait(1)
+
+        local highest_damage = 0
+        local highest_defense = 0
+        local highest_weapon
+        local highest_armor
+
+        local level2 = tonumber(match(level.Text, "%d+"))
+        for _, item in next, Inventory:GetChildren() do
+            local ItemData = ItemDatas[item.Name]
+
+            local class = ItemData.Type
+            if class ~= "Weapon" and class ~= "Clothing" then
+                continue
+            end
+
+            if ItemData.level > level2 then
+                continue
+            end
+
+            local base = ItemData.base
+            local upgrades = getUpgrade(item)
+            local rarity = ItemData.rarity
+            local stat = math.floor(base + (base * rates[rarity] * upgrades))
+
+            if class == "Weapon" then
+                if stat > highest_damage then
+                    highest_damage = stat
+                    highest_weapon = item
+                end
+
+            elseif class == "Clothing" then
+                if stat > highest_defense then
+                    highest_defense = stat
+                    highest_armor = item
+                end
+            end
+        end
+
+        if highest_weapon then
+            rf:InvokeServer("Equipment", {"EquipWeapon", highest_weapon, "Right"})
+        end
+
+        if highest_armor then
+            rf:InvokeServer("Equipment", {"Wear", highest_armor})
+        end
+    end
+
+    Inventory.ChildAdded:Connect(AutoEquip)
+    farm_tab2:AddToggle({
+        Name = "Auto Equip Best Equipment",
+        Default = false,
+        Callback = function(bool)
+            settings.AutoEquip = bool
+            AutoEquip()
+        end
+    })
+
+    local function AutoDismantle(item)
+        task.wait(1)
+
+        local ItemData = ItemDatas[item.Name]
+        local class = ItemData.Type
+        if class ~= "Weapon" and class ~= "Clothing" then
+            return
+        end
+
+        local rarity = ItemData.rarity
+        if dismantle[rarity] then
+            Event:FireServer("Equipment", {"Dismantle", {item}})
+        end
+    end
+
+    for i, v in next, names do
+        farm_tab2:AddToggle({
+            Name = "Auto Dismantle " .. v,
+            Default = false,
+            Callback = function(bool)
+                local rarity = rarities[i]
+                dismantle[rarity] = bool
+            end
+        })
+    end
+
+    Inventory.ChildAdded:Connect(AutoDismantle)
+end
+
+do
     local farm_tab3 = window:MakeTab({
         Name = "Farm Exclusion",
         Icon = "",
@@ -1568,8 +1659,6 @@ do
     end
 end
 
----Main_Character
-
 do
     local Character_tab = window:MakeTab({
         Name = "Character",
@@ -1672,13 +1761,6 @@ do
         end
     end)
 
-    Character_tab:AddToggle({
-        Name = "No Clip",
-        Default = false,
-        Callback = function(bool)
-            settings.NoClip = bool
-        end
-    })
 
     Character_tab:AddToggle({
         Name = "Infinite Sprint",
@@ -1713,8 +1795,6 @@ do
         end
     })
 end
-
----Main_Smithing
 
 do
     local Smithing = window:MakeTab({
@@ -1767,8 +1847,6 @@ do
         return coroutine.yield()
     end
 
----Tab_Smithing
-
     local crystalForge_module = require(ui_module.CrystalForge)
     Smithing:AddButton({
         Name = "Open Crystal Forge",
@@ -1806,8 +1884,6 @@ do
         })
     end
 end
-
----Reduce_Lagg
 
 do
     local Performance_tab = window:MakeTab({
@@ -1887,8 +1963,6 @@ do
     })
 end
 
----Main_Misc_tab
-
 do
     local Misc_tab = window:MakeTab({
         Name = "Misc",
@@ -1933,8 +2007,6 @@ do
         Players.PlayerRemoving:Connect(update_inventoryViewer_list)
     end
 
----Misc_tab
-
     Misc_tab:AddToggle({
         Name = "Infinite Zoom Distance",
         Default = false,
@@ -1956,22 +2028,5 @@ do
         end
     })
 end
-
-do
-    local credits = window:MakeTab({
-        Name = "Credits",
-        Icon = "",
-        PremiumOnly = false
-    })
-
-    credits:AddParagraph("Credits", "Reworks By | PinoyScripter")
-    if setclipboard then
-        credits:AddButton({
-            Name = "Copy v3rm url to clipboard",
-            Callback = function()
-                setclipboard("https://v3rmillion.net/member.php?action=profile&uid=1229592")
-            end
-        })
-
 
 lib:Init()
