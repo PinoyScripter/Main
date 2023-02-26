@@ -1,5 +1,5 @@
 -- loadfile('Scriptz/sb2 script.lua')()
--- loadstring(game:HttpGet('https://raw.githubusercontent.com/PinoyScripter/Main/main/Rock'))()
+-- loadstring(game:HttpGet('https://raw.githubusercontent.com/PinoyScripter/Main/main/Sb2test'))()
 if getgenv().SB2Script then
     return
 end
@@ -54,7 +54,7 @@ end
 
 local teleport_execute = queue_on_teleport or (fluxus and fluxus.queue_on_teleport) or (syn and syn.queue_on_teleport)
 if teleport_execute then
-    teleport_execute("loadstring(game:HttpGet('https://raw.githubusercontent.com/PinoyScripter/Main/main/Rock'))()")
+    teleport_execute("loadstring(game:HttpGet('https://raw.githubusercontent.com/PinoyScripter/Main/main/Sb2test'))()")
 end
 
 local mobs_on_floor = {
