@@ -569,6 +569,7 @@ local orion = protected:WaitForChild("Orion")
 local window = lib:MakeWindow({
     Name = "SB2",
     HidePremium = false,
+    IntroText = "PinoyScripter",
     SaveConfig = false,
     ConfigFolder = false
 })
