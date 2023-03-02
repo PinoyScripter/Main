@@ -1570,7 +1570,7 @@ do
         if placeid == 542351431 then -- floor 1
             local dungeon_entrance = Vector3.new(-1181, 70, 308)
             local miniboss = Vector3.new(139, 225, -132)
-            local boss = Vector3.new(-2944, -221, 1098)
+            local boss = Vector3.new(-2944.705810546875, -221.95892333984375, 1098.6927490234375)
 
             loop_workspace(dungeon_entrance, boss, miniboss)
         end
