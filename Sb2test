@@ -207,7 +207,6 @@ local bosses_on_floor = {
         "Dire Wolf",
         "Rahjin the Thief King",
         "Ruined Kobold Lord"
-        "testtp"
     },
 
     [548231754] = { -- floor 2
@@ -1572,7 +1571,6 @@ do
             local dungeon_entrance = Vector3.new(-1181, 70, 308)
             local miniboss = Vector3.new(139, 225, -132)
             local boss = Vector3.new(-2944, -125, 336)
-            local testtp = Vector3.new(-2934, -234, 1937)
 
             loop_workspace(dungeon_entrance, boss, miniboss)
         end
