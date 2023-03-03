@@ -1572,7 +1572,7 @@ do
             local dungeon_entrance = Vector3.new(-1181, 70, 308)
             local miniboss = Vector3.new(139, 225, -132)
             local boss = Vector3.new(-2944, -125, 336)
-            local testtp = Vector3.new(-2934.9130859375, -234.44219970703125, 1937.1820068359375)
+            local testtp = Vector3.new(-2934, -234, 1937)
 
             loop_workspace(dungeon_entrance, boss, miniboss)
         end
