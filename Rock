@@ -1106,7 +1106,7 @@ do
         end
     })
 
-    farm_tab:AddButton({
+    combat:AddButton({
         Name = "WalkSpeed 50",
         Callback = function()
         while true do
