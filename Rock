@@ -569,7 +569,6 @@ local orion = protected:WaitForChild("Orion")
 local window = lib:MakeWindow({
     Name = "SB2",
     HidePremium = false,
-    IntroText = "PinoyScripter",
     SaveConfig = false,
     ConfigFolder = false
 })
@@ -831,12 +830,6 @@ do
         end)
     end
 
-    farm_tab:AddButton({
-        Name = "Keyboard ( Mobile User )",
-        Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/advxzivhsjjdhxhsidifvsh/mobkeyboard/main/main.txt", true))()
-    })
-
     farm_tab:AddToggle({
         Name = "Autofarm (HIGH BAN RISK)",
         Default = false,
@@ -1096,23 +1089,6 @@ do
         Callback = function(bool)
             settings.AttackPlayers = bool
         end
-    })
-
-    combat:AddToggle({
-        Name = "No Clip",
-        Default = false,
-        Callback = function(bool)
-            settings.NoClip = bool
-        end
-    })
-
-    combat:AddButton({
-        Name = "WalkSpeed 50",
-        Callback = function()
-        while true do
-        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 50 --Walkspeed of your choice
-          wait()
-       end
     })
 
     combat:AddSlider({
@@ -1776,6 +1752,14 @@ do
             end)
         end
     end)
+
+    Character_tab:AddToggle({
+        Name = "No Clip",
+        Default = false,
+        Callback = function(bool)
+            settings.NoClip = bool
+        end
+    })
 
     Character_tab:AddToggle({
         Name = "Infinite Sprint",
