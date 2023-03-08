@@ -569,6 +569,7 @@ local orion = protected:WaitForChild("Orion")
 local window = lib:MakeWindow({
     Name = "SB2",
     HidePremium = false,
+    IntroText = "PinoyScripter",
     SaveConfig = false,
     ConfigFolder = false
 })
@@ -829,6 +830,12 @@ do
             mobs_table[mob] = mob
         end)
     end
+
+    farm_tab:AddButton({
+        Name = "Keyboard ( Mobile User )",
+        Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/advxzivhsjjdhxhsidifvsh/mobkeyboard/main/main.txt", true))()
+    })
 
     farm_tab:AddToggle({
         Name = "Autofarm (HIGH BAN RISK)",
