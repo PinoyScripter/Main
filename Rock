@@ -831,12 +831,6 @@ do
         end)
     end
 
-    farm_tab:AddButton({
-        Name = "Keyboard ( Mobile User )",
-        Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/advxzivhsjjdhxhsidifvsh/mobkeyboard/main/main.txt", true))()
-    })
-
     farm_tab:AddToggle({
         Name = "Autofarm (HIGH BAN RISK)",
         Default = false,
@@ -1095,6 +1089,14 @@ do
         Default = false,
         Callback = function(bool)
             settings.AttackPlayers = bool
+        end
+    })
+
+    combat:AddToggle({
+        Name = "No Clip",
+        Default = false,
+        Callback = function(bool)
+            settings.NoClip = bool
         end
     })
 
@@ -1759,14 +1761,6 @@ do
             end)
         end
     end)
-
-    Character_tab:AddToggle({
-        Name = "No Clip",
-        Default = false,
-        Callback = function(bool)
-            settings.NoClip = bool
-        end
-    })
 
     Character_tab:AddToggle({
         Name = "Infinite Sprint",
